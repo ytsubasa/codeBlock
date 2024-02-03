@@ -88,12 +88,10 @@
                    // コピー機能
                    function copyToClipboard() {
                     var text = editor.getSelectedText() || editor.getValue();
-                    navigator.clipboard.writeText(text).then(function() {
-                        console.log('コピーに成功しました！');
-                    }, function(err) {
-                        console.error('コピーに失敗しました：', err);
-                    });
+                    // navigator.clipboard.writeText(text)の代わりにメッセージを送信
+                    window.webkit.messageHandlers.copyHandler.postMessage(text);
                 }
+                
             </script>
         </body>
         </html>
