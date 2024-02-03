@@ -1,3 +1,6 @@
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,16 +12,13 @@
     <!-- エディタのスタイル定義 -->
     <style>
         #editor {
-            height: 500px;
+            height: 200px;
             width: 100%;
             margin-top: 40px; /* ドロップダウンメニューとコピーボタンの高さを考慮 */
         }
-
-        /* ドロップダウンメニューのスタイル */
-        #languageSelector {
+        #languageSelector, #copyButton, #copySelectedButton {
             position: absolute;
-            top: 0px; /* 位置を調整 */
-            left: 20px;
+            top: 0px;
             padding: 5px 10px;
             border-radius: 5px;
             background-color: #1c2022;
@@ -27,31 +27,38 @@
             outline: none;
             font-size: 16px;
             cursor: pointer;
-        }
-
-        /* コピーボタンのスタイル */
-        #copyButton {
-            position: absolute;
-            top: 0px; /* 位置を上に調整 */
-            right: 20px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #1c2022;
-            color: white;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 16px; /* フォントサイズを調整 */
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* 影を追加 */
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
             transition: 0.3s;
         }
-
+        #languageSelector {
+            left: 20px;
+        }
+        #copyButton, #copySelectedButton {
+            right: 20px;
+        }
+        #copyButton {
+            top: 0px; /* 位置を上に調整 */
+        }
+        #copyInfo {
+            position: absolute; /* 絶対位置指定 */
+            top: 0px; /* 位置を上に調整 */
+            right: 160px; /* copyButtonの左に配置するための位置調整 */
+            padding: 5px 10px; /* 内部の余白 */
+            border-radius: 5px; /* 角を丸く */
+            background-color: white; /* バックグラウンドカラーを白に */
+            color: black; /* テキストカラーを黒に */
+            border: 1px solid black; /* 黒い枠線を追加 */
+            font-size: 16px; /* フォントサイズ */
+            cursor: default; /* カーソルをデフォルトに */
+            box-shadow: none; /* 影を削除 */
+        }
+        
         #copyButton:hover {
             background-color: #063852; /* ホバー時の背景色を変更 */
         }
     </style>
 </head>
 <body>
-
     <!-- 言語選択のドロップダウンメニュー -->
     <select id="languageSelector">
         <option value="swift">Swift</option>
@@ -68,13 +75,99 @@
     <!-- エディタとして使用するコンテナ -->
     <div id="editor">func sayHello() { print("Hello, World!") }</div>
 
-    <!-- コピー機能を呼び出すボタン -->
-    <button id="copyButton" onclick="copyToClipboard()">コピー</button>
+    <!-- 全体をコピーする機能を呼び出すボタン -->
+    <button id="copyButton" onclick="copyText()">コピー</button>
+
+    <div id="copyInfo">選択コピーは自動でされます</div>
+
     <script>
         // Ace エディタのインスタンスを作成し、初期化する
         var editor = ace.edit("editor");
         editor.setTheme("ace/theme/monokai");  // エディタのテーマを設定
         editor.session.setMode("ace/mode/swift");  // 初期のエディタのモード（言語）を設定
+
+
+
+
+        editor.getSession().selection.on('changeSelection', function(e) {
+            var selectedText = editor.getSelectedText();
+            if (selectedText.length > 0) {
+                // 選択されたテキストがある場合、カスタムURLを呼び出す
+                var encodedText = encodeURIComponent(selectedText);
+                window.location.href = "myapp://copy?text=" + encodedText;
+            }
+        });
+
+
+
+
+
+        function copyToClipboard(text) {
+            var encodedText = encodeURIComponent(text);
+            window.location.href = "myapp://copy?text=" + encodedText;
+        }
+        
+
+        
+       // Ace エディタのインスタンスを作成し、初期化する部分の直後に追加
+        // Ace エディタのインスタンスを作成し、初期化する部分の直後に追加
+        function adjustEditorHeightAndPostToSwift() {
+            var editor = ace.edit("editor");
+            var numberOfRows = editor.getSession().getLength();
+            var lineHeight = editor.renderer.lineHeight;
+            var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth(); // スクロールバーの幅も考慮
+
+            // エディタのコンテナの高さを更新
+            document.getElementById('editor').style.height = newHeight + 'px';
+            editor.resize(); // エディタのリサイズイベントをトリガー
+
+            // 新しい高さをSwiftに送信
+            window.webkit.messageHandlers.heightHandler.postMessage(newHeight);
+        }
+
+        // エディタの内容が変更された時にエディタの高さを自動的に更新し、Swiftに通知
+        editor.getSession().on('change', function() {
+            adjustEditorHeightAndPostToSwift();
+        });
+
+        // ページ読み込み時にも一度エディタの高さを調整し、Swiftに通知
+        adjustEditorHeightAndPostToSwift();
+
+
+        
+
+        function copyText() {
+            var text = editor.getSelectedText() || editor.getValue();
+            navigator.clipboard.writeText(text).then(function() {
+                window.webkit.messageHandlers.copyHandler.postMessage(text);
+            }).catch(function(error) {
+                window.webkit.messageHandlers.copyHandler.postMessage('コピーに失敗しました');
+            });
+        } 
+        
+
+
+
+        
+        function selectText(elementId) {
+            var text = document.getElementById(elementId);
+            var range = document.createRange();
+            range.selectNode(text);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+        }
+
+
+   
+        function pasteText() {
+            navigator.clipboard.readText().then((text) => {
+                // ペーストする場所（テキストエリアなど）を指定して、textを挿入
+                document.getElementById('pasteArea').value = text;
+            }).catch((err) => {
+                console.error('ペーストに失敗しました: ', err);
+            });
+        }
+        
 
         // ドロップダウンメニューの選択変更イベントを処理する
         document.getElementById('languageSelector').addEventListener('change', function() {
@@ -91,7 +184,16 @@
                     // navigator.clipboard.writeText(text)の代わりにメッセージを送信
                     window.webkit.messageHandlers.copyHandler.postMessage(text);
                 }
-                
-            </script>
-        </body>
-        </html>
+
+
+        // その他の関数とイベントリスナー...
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+     
