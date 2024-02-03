@@ -116,6 +116,12 @@
         });
         
 
+        function copyToClipboard() {
+            var text = editor.getSelectedText() || editor.getValue();
+            // navigator.clipboard.writeText(text)の代わりにメッセージを送信
+            window.webkit.messageHandlers.copyHandler.postMessage(text);
+        }
+
 
 
         editor.getSession().selection.on('changeSelection', function(e) {
@@ -183,14 +189,8 @@
         // 検索機能を有効化
         ace.require("ace/ext/searchbox");
 
-        // コピー機能
-                   // コピー機能
-                   function copyToClipboard() {
-                    var text = editor.getSelectedText() || editor.getValue();
-                    // navigator.clipboard.writeText(text)の代わりにメッセージを送信
-                    window.webkit.messageHandlers.copyHandler.postMessage(text);
-                }
-
+        
+                 
 
         // その他の関数とイベントリスナー...
     </script>
