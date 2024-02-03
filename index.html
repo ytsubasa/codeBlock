@@ -82,10 +82,29 @@
 
     <script>
         // Ace エディタのインスタンスを作成し、初期化する
-        var editor = ace.edit("editor");
-        editor.setTheme("ace/theme/monokai");  // エディタのテーマを設定
-        editor.session.setMode("ace/mode/swift");  // 初期のエディタのモード（言語）を設定
-
+        document.addEventListener('DOMContentLoaded', function() {
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.session.setMode("ace/mode/swift");
+        
+            function adjustEditorHeightAndPostToSwift() {
+                var numberOfRows = editor.getSession().getLength();
+                var lineHeight = editor.renderer.lineHeight;
+                var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth(); // スクロールバーの幅も考慮
+                var minHeight = 200; // エディタの最小高さを200pxとする
+        
+                newHeight = Math.max(newHeight, minHeight); // 最小高さを保証
+        
+                document.getElementById('editor').style.height = newHeight + 'px';
+                editor.resize(); // エディタのリサイズイベントをトリガー
+        
+                window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
+            }
+        
+            editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
+            adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
+        });
+        
 
 
 
@@ -109,30 +128,7 @@
         
 
         
-       // Ace エディタのインスタンスを作成し、初期化する部分の直後に追加
-        // Ace エディタのインスタンスを作成し、初期化する部分の直後に追加
-        function adjustEditorHeightAndPostToSwift() {
-            var editor = ace.edit("editor");
-            var numberOfRows = editor.getSession().getLength();
-            var lineHeight = editor.renderer.lineHeight;
-            var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth(); // スクロールバーの幅も考慮
-
-            // エディタのコンテナの高さを更新
-            document.getElementById('editor').style.height = newHeight + 'px';
-            editor.resize(); // エディタのリサイズイベントをトリガー
-
-            // 新しい高さをSwiftに送信
-            window.webkit.messageHandlers.heightHandler.postMessage(newHeight);
-        }
-
-        // エディタの内容が変更された時にエディタの高さを自動的に更新し、Swiftに通知
-        editor.getSession().on('change', function() {
-            adjustEditorHeightAndPostToSwift();
-        });
-
-        // ページ読み込み時にも一度エディタの高さを調整し、Swiftに通知
-        adjustEditorHeightAndPostToSwift();
-
+      
 
         
 
