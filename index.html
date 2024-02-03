@@ -82,10 +82,10 @@
 
     <script>
 
-    
+        var editor = ace.edit("editor");
         // Ace エディタのインスタンスを作成し、初期化する
         document.addEventListener('DOMContentLoaded', function() {
-            var editor = ace.edit("editor");
+         
             
             editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/swift");
