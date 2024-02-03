@@ -119,11 +119,14 @@
         function copyText() {
             var text = editor.getSelectedText() || editor.getValue();
             navigator.clipboard.writeText(text).then(function() {
+                // コピーに成功した場合のみSwift側にメッセージを送信
                 window.webkit.messageHandlers.copyHandler.postMessage(text);
             }).catch(function(error) {
-                window.webkit.messageHandlers.copyHandler.postMessage('コピーに失敗しました');
+                console.error('コピーに失敗しました: ', error);
+                // コピー失敗をSwift側に知らせる場合は次の行のコメントを外してください
+                 window.webkit.messageHandlers.copyHandler.postMessage('コピーに失敗しました'); -->
             });
-        } 
+        }
         
 
        
