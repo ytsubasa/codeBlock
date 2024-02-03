@@ -114,14 +114,19 @@
             editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
             adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
         });
+                
+
+        function copyText() {
+            var text = editor.getSelectedText() || editor.getValue();
+            navigator.clipboard.writeText(text).then(function() {
+                window.webkit.messageHandlers.copyHandler.postMessage(text);
+            }).catch(function(error) {
+                window.webkit.messageHandlers.copyHandler.postMessage('コピーに失敗しました');
+            });
+        } 
         
 
-        function copyToClipboard() {
-            var text = editor.getSelectedText() || editor.getValue();
-            // navigator.clipboard.writeText(text)の代わりにメッセージを送信
-            window.webkit.messageHandlers.copyHandler.postMessage(text);
-        }
-
+       
 
 
         editor.getSession().selection.on('changeSelection', function(e) {
@@ -146,17 +151,7 @@
         
       
 
-        
 
-        function copyText() {
-            var text = editor.getSelectedText() || editor.getValue();
-            navigator.clipboard.writeText(text).then(function() {
-                window.webkit.messageHandlers.copyHandler.postMessage(text);
-            }).catch(function(error) {
-                window.webkit.messageHandlers.copyHandler.postMessage('コピーに失敗しました');
-            });
-        } 
-        
 
 
 
