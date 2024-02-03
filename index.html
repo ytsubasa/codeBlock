@@ -81,9 +81,12 @@
     <div id="copyInfo">選択コピーは自動でされます</div>
 
     <script>
+
+    
         // Ace エディタのインスタンスを作成し、初期化する
         document.addEventListener('DOMContentLoaded', function() {
             var editor = ace.edit("editor");
+            
             editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/swift");
         
@@ -117,15 +120,16 @@
                 
 
         function copyText() {
-            var text = editor.getSelectedText() || editor.getValue();
-            navigator.clipboard.writeText(text).then(function() {
-                // コピーに成功した場合のみSwift側にメッセージを送信
-                window.webkit.messageHandlers.copyHandler.postMessage(text);
-            }).catch(function(error) {
-                console.error('コピーに失敗しました: ', error);
-                // コピー失敗をSwift側に知らせる場合は次の行のコメントを外してください
-                 window.webkit.messageHandlers.copyHandler.postMessage('コピーに失敗しました'); -->
-            });
+            if (editor) { // editor オブジェクトの存在を確認
+                var text = editor.getSelectedText() || editor.getValue();
+                navigator.clipboard.writeText(text).then(function() {
+                    window.webkit.messageHandlers.copyHandler.postMessage(text);
+                }).catch(function(error) {
+                    console.error('コピーに失敗しました: ', error);
+                });
+            } else {
+                console.error("editor オブジェクトが未定義です。");
+            }
         }
         
 
