@@ -100,7 +100,8 @@
                 enableBasicAutocompletion: true,  // 基本的なオートコンプリートを有効にする
                 enableSnippets: true,            // コードスニペットを有効にする
                 enableLiveAutocompletion: true,  // ライブ（リアルタイム）オートコンプリートを有効にする
-                dragEnabled: true                // ドラッグ＆ドロップを有効にする
+                dragEnabled: true,     
+                wrap: true   
             });
             function adjustEditorHeightAndPostToSwift() {
                 var numberOfRows = editor.getSession().getLength();
