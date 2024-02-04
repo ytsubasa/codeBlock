@@ -12,7 +12,7 @@
     <!-- エディタのスタイル定義 -->
     <style>
         #editor {
-            height: 200px;
+            min-height: 100px; 
             width: 100%;
             margin-top: 40px; /* ドロップダウンメニューとコピーボタンの高さを考慮 */
         }
@@ -79,7 +79,7 @@
     </select>
 
     <!-- エディタとして使用するコンテナ -->
-    <div id="editor"></div>
+    <div id="editor">          </div>
 
     <!-- 全体をコピーする機能を呼び出すボタン -->
     <button id="copyButton" onclick="copyText()">コピー</button>
