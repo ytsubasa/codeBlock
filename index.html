@@ -56,6 +56,12 @@
         #copyButton:hover {
             background-color: #063852; /* ホバー時の背景色を変更 */
         }
+
+        .ace_editor {
+            font-family: 'SF Mono Medium', monospace; /* フォントファミリーを設定 */
+            font-size: 14px; /* フォントサイズを設定 */
+        }
+
     </style>
 </head>
 <body>
@@ -100,7 +106,7 @@
                 var numberOfRows = editor.getSession().getLength();
                 var lineHeight = editor.renderer.lineHeight;
                 var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth(); // スクロールバーの幅も考慮
-                var minHeight = 200; // エディタの最小高さを200pxとする
+                var minHeight = 100; // エディタの最小高さを200pxとする
         
                 newHeight = Math.max(newHeight, minHeight); // 最小高さを保証
         
