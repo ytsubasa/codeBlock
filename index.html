@@ -120,6 +120,21 @@
             editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
             adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
         
+
+
+                    // エディタの内容が変わった際に呼ばれる関数
+            editor.getSession().on('change', function(delta) {
+                console.log("codeUpdate event triggered"); // デバッグプリント
+                window.webkit.messageHandlers.codeUpdate.postMessage(editor.getValue());
+            });
+
+            // 言語の選択が変わった際に呼ばれる関数
+            languageSelector.onchange = function() {
+                console.log("languageUpdate event triggered", languageSelector.value); // デバッグプリント
+                window.webkit.messageHandlers.languageUpdate.postMessage(languageSelector.value);
+            };
+
+                        
                 
 
         function copyText() {
