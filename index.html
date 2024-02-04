@@ -92,57 +92,7 @@
         // Ace エディタのインスタンスを作成し、初期化する
        
          
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/monokai");
-            editor.session.setMode("ace/mode/swift");
-        
-            editor.setOptions({
-                enableBasicAutocompletion: true,  // 基本的なオートコンプリートを有効にする
-                enableSnippets: true,            // コードスニペットを有効にする
-                enableLiveAutocompletion: true,  // ライブ（リアルタイム）オートコンプリートを有効にする
-                dragEnabled: true,     
-                wrap: true   
-            });
-            function adjustEditorHeightAndPostToSwift() {
-                var numberOfRows = editor.getSession().getLength();
-                var lineHeight = editor.renderer.lineHeight;
-                var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth(); // スクロールバーの幅も考慮
-                var minHeight = 100; // エディタの最小高さを200pxとする
-        
-                newHeight = Math.max(newHeight, minHeight); // 最小高さを保証
-        
-                document.getElementById('editor').style.height = newHeight + 'px';
-                editor.resize(); // エディタのリサイズイベントをトリガー
-        
-                window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
-            }
-        
-            editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
-            adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
-        
-
-            function onEditorContentChange() {
-                console.log("codeUpdate event triggered"); // デバッグプリント
-                window.webkit.messageHandlers.codeUpdate.postMessage(editor.getValue());
-            }
-            
-
-
-            function onLanguageSelectionChange() {
-                console.log("languageUpdate event triggered", languageSelector.value); // デバッグプリント
-                window.webkit.messageHandlers.languageUpdate.postMessage(languageSelector.value);
-            }
-            
-            
-
-
-            editor.getSession().on('change', onEditorContentChange);
-
-            languageSelector.onchange = onLanguageSelectionChange;
-
-                        
-                
-
+        z
         function copyText() {
             if (editor) { // editor オブジェクトの存在を確認
                 var text = editor.getSelectedText() || editor.getValue();
@@ -190,6 +140,23 @@
                 console.error('ペーストに失敗しました: ', err);
             });
         }
+
+
+        function setEditorValue(escapedCode) {
+            try {
+                // デコードされたコードをエディタに設定
+                var code = decodeURIComponent(escapedCode);
+                console.log("Setting code in the editor:", code);
+                editor.setValue(code);
+                console.log("Code was set successfully.");
+            } catch (e) {
+                // エラーが発生した場合、コンソールにエラーメッセージを表示
+                console.error("Error setting code in the editor:", e);
+            }
+        }
+
+
+
         
 
         // ドロップダウンメニューの選択変更イベントを処理する
