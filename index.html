@@ -95,6 +95,10 @@
             var editor = ace.edit("editor");
             editor.setTheme("ace/theme/monokai");
             editor.session.setMode("ace/mode/swift");
+
+
+
+            
         
             editor.setOptions({
                 enableBasicAutocompletion: true,  // 基本的なオートコンプリートを有効にする
@@ -103,6 +107,13 @@
                 dragEnabled: true,     
                 wrap: true   
             });
+
+            editor.on('focus', function() {
+                editor.gotoLine(1, 0, false);
+            });
+
+
+
             function adjustEditorHeightAndPostToSwift() {
                 var numberOfRows = editor.getSession().getLength();
                 var lineHeight = editor.renderer.lineHeight;
