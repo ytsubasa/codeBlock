@@ -100,6 +100,19 @@
             editor.session.setMode("ace/mode/swift");
 
 
+            editor.container.style.overflow = 'hidden'; // CSSで直接設定
+
+            // ページ全体でのスクロールを無効にする
+            document.body.addEventListener('wheel', function(e) {
+                e.preventDefault(); // マウスホイールによるスクロールを無効に
+            }, { passive: false });
+        
+            document.body.addEventListener('touchmove', function(e) {
+                e.preventDefault(); // タッチによるスクロールを無効に
+            }, { passive: false });
+        
+
+
             editor.on('paste', function(e) {
                 // クリップボードからプレーンテキストとしてデータを取得
                 var clipboardData = e.text;
