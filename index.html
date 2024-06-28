@@ -149,7 +149,7 @@
                     var numberOfRows = editor.getSession().getLength();
                     var lineHeight = editor.renderer.lineHeight;
 
-                    var extraPadding = 500;  // 余白を50pxに増やしてみる
+                    var extraPadding = 50;  // 余白を50pxに増やしてみる
         var newHeight = numberOfRows * lineHeight + extraPadding;
                     var minHeight = 100; // 最小高さを設定
             
@@ -158,7 +158,7 @@
                     editor.resize(); // エディタのサイズ変更をトリガー
             
                     window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
-                }, 100); // 遅延時間は100ミリ秒に設定
+                }, 1000); // 遅延時間は100ミリ秒に設定
             }
             
         
