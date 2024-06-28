@@ -187,37 +187,42 @@
 
                         
             function setEditorCode(code) {
+                console.log("Setting code in the editor with raw input:", code);
                 try {
-                // デコードされたコードをエディタに設定
-                var decodedCode = decodeURIComponent(code);
-                editor.setValue(decodedCode);
-                console.log("Code is set in the editor.");
+                    // デコードされたコードをエディタに設定
+                    var decodedCode = decodeURIComponent(code);
+                    console.log("Decoded code:", decodedCode);
+                    editor.setValue(decodedCode, 1); // カーソルを文書の先頭に設定
+                    editor.gotoLine(1, 0, true); // カーソルを最初の行の最初の位置に移動
+                    console.log("Code is set in the editor successfully.");
                 } catch (e) {
-                // エラーが発生した場合、コンソールにエラーメッセージを表示
-                console.error("Error setting code in the editor: ", e.message);
-                console.error(e);
+                    // エラーが発生した場合、コンソールにエラーメッセージを表示
+                    console.error("Error setting code in the editor: ", e);
+                    console.error("Exception details:", e.message, "\nStack trace:", e.stack);
                 }
-                }
+            }
+            
             
         
-            // Swiftから送信された言語設定をエディタに適用する関数
             function setEditorLanguage(language) {
+                console.log("Setting language mode in the editor to:", language);
                 try {
                     editor.session.setMode("ace/mode/" + language);
-                    console.log("Language mode is set to: " + language);
+                    console.log("Language mode is set successfully to:", language);
             
                     // トグルボタンの選択値を更新
                     var languageSelector = document.getElementById('languageSelector');
                     if (languageSelector) {
                         languageSelector.value = language;
-                        console.log("Toggle button (languageSelector) updated to: " + language);
+                        console.log("Toggle button (languageSelector) updated to:", language);
                     }
                 } catch (e) {
                     // エラーが発生した場合、コンソールにエラーメッセージを表示
-                    console.error("Error setting language mode in the editor: ", e.message);
-                    console.error(e);
+                    console.error("Error setting language mode in the editor: ", e);
+                    console.error("Exception details:", e.message, "\nStack trace:", e.stack);
                 }
             }
+            
             
 
 
