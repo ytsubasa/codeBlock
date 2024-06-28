@@ -121,18 +121,21 @@
 
 
             function adjustEditorHeightAndPostToSwift() {
-                var numberOfRows = editor.getSession().getLength();
-                var lineHeight = editor.renderer.lineHeight;
-                var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth(); // スクロールバーの幅も考慮
-                var minHeight = 100; // エディタの最小高さを200pxとする
-        
-                newHeight = Math.max(newHeight, minHeight); // 最小高さを保証
-        
-                document.getElementById('editor').style.height = newHeight + 'px';
-                editor.resize(); // エディタのリサイズイベントをトリガー
-        
-                window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
+                // エディタの内容が完全にレンダリングされるのを確実に待つための遅延を設ける
+                setTimeout(function() {
+                    var numberOfRows = editor.getSession().getLength();
+                    var lineHeight = editor.renderer.lineHeight;
+                    var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth();
+                    var minHeight = 100; // 最小高さを設定
+            
+                    newHeight = Math.max(newHeight, minHeight); // 最小高さを保証する
+                    document.getElementById('editor').style.height = newHeight + 'px';
+                    editor.resize(); // エディタのサイズ変更をトリガー
+            
+                    window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
+                }, 100); // 遅延時間は100ミリ秒に設定
             }
+            
         
             editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
             adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
