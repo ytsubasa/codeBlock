@@ -100,9 +100,18 @@
 
 
             editor.on('paste', function(e) {
-                var clipboardData = e.text; // イベントからプレーンテキストを取得
-                e.text = clipboardData; // エディタにはプレーンテキストだけを挿入
+                // クリップボードからプレーンテキストとしてデータを取得
+                var clipboardData = e.text;
+            
+                // エディタにプレーンテキストだけを挿入
+                e.text = clipboardData;
+            
+                // ペースト直後にエディタの高さを調整する関数を呼び出す
+                setTimeout(function() {
+                    adjustEditorHeightAndPostToSwift();
+                }, 100); // 少し遅延を入れることでDOMの更新を待つ
             });
+            
         
             
         
