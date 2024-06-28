@@ -134,7 +134,8 @@
                 setTimeout(function() {
                     var numberOfRows = editor.getSession().getLength();
                     var lineHeight = editor.renderer.lineHeight;
-                    var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth();
+                    var additionalHeight = 20; // 余白として20pxを追加
+                    var newHeight = numberOfRows * lineHeight + editor.renderer.scrollBar.getWidth() + additionalHeight;
                     var minHeight = 100; // 最小高さを設定
             
                     newHeight = Math.max(newHeight, minHeight); // 最小高さを保証する
