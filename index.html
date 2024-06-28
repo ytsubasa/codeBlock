@@ -110,6 +110,10 @@
                 e.preventDefault(); // タッチによるスクロールを無効に
             }, { passive: false });
         
+            editor.setOptions({
+                fontSize: "22px"
+            });
+        
 
 
             editor.on('paste', function(e) {
