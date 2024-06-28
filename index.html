@@ -99,15 +99,9 @@
             editor.session.setMode("ace/mode/swift");
 
 
-            editor.container.addEventListener('paste', function(e) {
-                // デフォルトのペースト処理を停止
-                e.preventDefault();
-        
-                // クリップボードからプレーンテキストとしてデータを取得
-                var text = (e.clipboardData || window.clipboardData).getData('text/plain');
-        
-                // エディタの現在のカーソル位置にテキストを挿入
-                editor.insert(text);
+            editor.on('paste', function(e) {
+                var clipboardData = e.text; // イベントからプレーンテキストを取得
+                e.text = clipboardData; // エディタにはプレーンテキストだけを挿入
             });
         
             
