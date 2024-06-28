@@ -188,17 +188,16 @@
                         
             function setEditorCode(code) {
                 try {
-                    // デコードされたコードをエディタに設定
-                    var decodedCode = decodeURIComponent(code);
-                    editor.setValue(decodedCode, 1); // カーソルを文書の先頭に設定
-                    editor.gotoLine(1, 0, true); // カーソルを最初の行の最初の位置に移動
-                    console.log("Code is set in the editor.");
+                // デコードされたコードをエディタに設定
+                var decodedCode = decodeURIComponent(code);
+                editor.setValue(decodedCode);
+                console.log("Code is set in the editor.");
                 } catch (e) {
-                    // エラーが発生した場合、コンソールにエラーメッセージを表示
-                    console.error("Error setting code in the editor: ", e.message);
-                    console.error(e);
+                // エラーが発生した場合、コンソールにエラーメッセージを表示
+                console.error("Error setting code in the editor: ", e.message);
+                console.error(e);
                 }
-            }
+                }
             
         
             // Swiftから送信された言語設定をエディタに適用する関数
