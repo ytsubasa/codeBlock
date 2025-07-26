@@ -156,18 +156,17 @@
 
 
 
-         function adjustEditorHeightAndPostToSwift() {
+     function adjustEditorHeightAndPostToSwift() {
     setTimeout(function() {
-        var numberOfRows = editor.getSession().getLength();
-        var lineHeight = editor.renderer.lineHeight;
+        // ✅ 実際のエディタDOMから高さを取得
+        var editorElement = document.getElementById('editor');
+        var newHeight = editorElement.scrollHeight; 
 
-        // 🔹 余計な + (numberOfRows * 3) を削除
-        var extraPadding = 65; // 固定分だけ
-        var newHeight = numberOfRows * lineHeight + extraPadding;
-
-        document.getElementById('editor').style.height = newHeight + 'px';
+        // ✅ CSS反映
+        editorElement.style.height = newHeight + 'px';
         editor.resize();
 
+        // ✅ Swiftへ通知
         window.webkit.messageHandlers.heightHandler.postMessage(newHeight);
     }, 100);
 }
