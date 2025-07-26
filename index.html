@@ -1,16 +1,17 @@
 
 
-
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <!-- Ace エディタのメインスクリプト -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-    <!-- 検索機能のための拡張機能スクリプト -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-searchbox.js"></script>
-    <!-- エディタのスタイル定義 -->
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <!-- Ace エディタのメインスクリプト -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+        <!-- 検索機能のための拡張機能スクリプト -->
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-searchbox.js"></script>
+        <!-- エディタのスタイル定義 -->
+        <style>
         #editor {
             min-height: 100px; 
             width: 1200px; /* 幅を固定値1200pxに設定 */
@@ -66,32 +67,41 @@
         }
 
     </style>
-</head>
-<body>
-    <!-- 言語選択のドロップダウンメニュー -->
-    <select id="languageSelector">
-        <option value="swift">Swift</option>
-        <option value="javascript">JavaScript</option>
-        <option value="html">HTML</option>
-        <option value="bash">Bash</option>
-        <option value="css">CSS</option>
-        <option value="json">JSON</option>
-        <option value="python">Python</option>
-        <option value="sh">Shell</option>
-        <!-- 他の言語オプションを追加 -->
-    </select>
+    </head>
+    <body>
+        <!-- 言語選択のドロップダウンメニュー -->
+        <select id="languageSelector">
+            <option value="swift">Swift</option>
+            <option value="javascript">JavaScript</option>
+            <option value="html">HTML</option>
+            <option value="bash">Bash</option>
+            <option value="css">CSS</option>
+            <option value="json">JSON</option>
+            <option value="python">Python</option>
+            <option value="sh">Shell</option>
+            <!-- 他の言語オプションを追加 -->
+        </select>
 
-    <!-- エディタとして使用するコンテナ -->
-    <div id="editor">          </div>
+        <!-- エディタとして使用するコンテナ -->
+        <div id="editor"> </div>
 
-    <!-- 全体をコピーする機能を呼び出すボタン -->
-    <button id="copyButton" onclick="copyText()">コピー</button>
+        <!-- 全体をコピーする機能を呼び出すボタン -->
+        <button id="copyButton" onclick="copyText()">コピー</button>
 
-    <div id="copyInfo">選択コピーは自動でされます</div>
+        <div id="copyInfo">選択コピーは自動でされます</div>
 
-    <script>
+        <script>
 
-        
+        window.onload = function() {
+    console.log("window.onload → エディタ初期化チェック");
+    // すでにコードが入っていない場合のみ、空コードを設定
+    if (!editor.getValue().trim()) {
+        console.log("エディタが空 → 左上に初期化");
+        setEditorCode("");
+    } else {
+        console.log("エディタに既存コードあり → 初期化スキップ");
+    }
+};
        
          
             var editor = ace.edit("editor");
@@ -189,18 +199,21 @@
             languageSelector.onchange = onLanguageSelectionChange;
 
                         
-         function setEditorCode(code) {
-    try {
-        var decodedCode = decodeURIComponent(code);
-        editor.setValue(decodedCode, -1); // -1: カーソル位置を保持
-        setTimeout(() => {
-            editor.gotoLine(1, 0, true); // 初期化後に左上へ強制移動
-        }, 200);
-    } catch (e) {
-        console.error("Error setting code in the editor: ", e);
-    }
-}
-
+            function setEditorCode(code) {
+                console.log("Setting code in the editor with raw input:", code);
+                try {
+                    // デコードされたコードをエディタに設定
+                    var decodedCode = decodeURIComponent(code);
+                    console.log("Decoded code:", decodedCode);
+                    editor.setValue(decodedCode, 1); // カーソルを文書の先頭に設定
+                    editor.gotoLine(1, 0, true); // カーソルを最初の行の最初の位置に移動
+                    console.log("Code is set in the editor successfully.");
+                } catch (e) {
+                    // エラーが発生した場合、コンソールにエラーメッセージを表示
+                    console.error("Error setting code in the editor: ", e);
+                    console.error("Exception details:", e.message, "\nStack trace:", e.stack);
+                }
+            }
             
             
         
@@ -291,12 +304,5 @@
    
         // その他の関数とイベントリスナー...
     </script>
-</body>
+    </body>
 </html>
-
-
-
-
-
-
-     
