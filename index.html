@@ -156,23 +156,22 @@
 
 
 
-            function adjustEditorHeightAndPostToSwift() {
-                // エディタの内容が完全にレンダリングされるのを確実に待つための遅延を設ける
-                setTimeout(function() {
-                    var numberOfRows = editor.getSession().getLength();
-                    var lineHeight = editor.renderer.lineHeight;
-
-                    var extraPadding = 65 + (numberOfRows * 3);
+           function adjustEditorHeightAndPostToSwift() {
+    setTimeout(function() {
+        var numberOfRows = editor.getSession().getLength();
+        var lineHeight = editor.renderer.lineHeight;
+        var extraPadding = 65 + (numberOfRows * 3);
         var newHeight = numberOfRows * lineHeight + extraPadding;
-                    var minHeight = 100; // 最小高さを設定
-            
-                    newHeight = Math.max(newHeight, minHeight); // 最小高さを保証する
-                    document.getElementById('editor').style.height = newHeight + 'px';
-                    editor.resize(); // エディタのサイズ変更をトリガー
-            
-                    window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
-                }, 100); // 遅延時間は100ミリ秒に設定
-            }
+
+        // ✅ CSS側でエディタを動的に伸ばす
+        document.getElementById('editor').style.height = newHeight + 'px';
+        editor.resize();
+
+        // ✅ Swift 側に高さを通知（これを使ってWebViewのframeを更新）
+        window.webkit.messageHandlers.heightHandler.postMessage(newHeight);
+    }, 100);
+}
+
             
         
             editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
