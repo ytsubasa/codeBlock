@@ -156,13 +156,16 @@
 
 
 
-     function adjustEditorHeightAndPostToSwift() {
+function adjustEditorHeightAndPostToSwift() {
     setTimeout(function() {
-        // ✅ 実際のエディタDOMから高さを取得
-        var editorElement = document.getElementById('editor');
-        var newHeight = editorElement.scrollHeight; 
+        // ✅ Ace の内部スクローラーを取得
+        var scroller = document.querySelector('#editor .ace_scroller');
+
+        // ✅ 実際の描画高さを取得
+        var newHeight = scroller ? scroller.scrollHeight : document.getElementById('editor').scrollHeight;
 
         // ✅ CSS反映
+        var editorElement = document.getElementById('editor');
         editorElement.style.height = newHeight + 'px';
         editor.resize();
 
@@ -170,6 +173,7 @@
         window.webkit.messageHandlers.heightHandler.postMessage(newHeight);
     }, 100);
 }
+
 
 
             
