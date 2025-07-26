@@ -189,21 +189,18 @@
             languageSelector.onchange = onLanguageSelectionChange;
 
                         
-            function setEditorCode(code) {
-                console.log("Setting code in the editor with raw input:", code);
-                try {
-                    // デコードされたコードをエディタに設定
-                    var decodedCode = decodeURIComponent(code);
-                    console.log("Decoded code:", decodedCode);
-                    editor.setValue(decodedCode, 1); // カーソルを文書の先頭に設定
-                    editor.gotoLine(1, 0, true); // カーソルを最初の行の最初の位置に移動
-                    console.log("Code is set in the editor successfully.");
-                } catch (e) {
-                    // エラーが発生した場合、コンソールにエラーメッセージを表示
-                    console.error("Error setting code in the editor: ", e);
-                    console.error("Exception details:", e.message, "\nStack trace:", e.stack);
-                }
-            }
+         function setEditorCode(code) {
+    try {
+        var decodedCode = decodeURIComponent(code);
+        editor.setValue(decodedCode, -1); // -1: カーソル位置を保持
+        setTimeout(() => {
+            editor.gotoLine(1, 0, true); // 初期化後に左上へ強制移動
+        }, 200);
+    } catch (e) {
+        console.error("Error setting code in the editor: ", e);
+    }
+}
+
             
             
         
