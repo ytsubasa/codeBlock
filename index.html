@@ -156,24 +156,21 @@
 
 
 
-function adjustEditorHeightAndPostToSwift() {
+         function adjustEditorHeightAndPostToSwift() {
     setTimeout(function() {
-        // ✅ Ace の内部スクローラーを取得
-        var scroller = document.querySelector('#editor .ace_scroller');
+        var numberOfRows = editor.getSession().getLength();
+        var lineHeight = editor.renderer.lineHeight;
 
-        // ✅ 実際の描画高さを取得
-        var newHeight = scroller ? scroller.scrollHeight : document.getElementById('editor').scrollHeight;
+        // 🔹 余計な + (numberOfRows * 3) を削除
+        var extraPadding = 65; // 固定分だけ
+        var newHeight = numberOfRows * lineHeight 
 
-        // ✅ CSS反映
-        var editorElement = document.getElementById('editor');
-        editorElement.style.height = newHeight + 'px';
+        document.getElementById('editor').style.height = newHeight + 'px';
         editor.resize();
 
-        // ✅ Swiftへ通知
         window.webkit.messageHandlers.heightHandler.postMessage(newHeight);
     }, 100);
 }
-
 
 
             
