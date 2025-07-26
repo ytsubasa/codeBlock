@@ -162,8 +162,10 @@
                     var numberOfRows = editor.getSession().getLength();
                     var lineHeight = editor.renderer.lineHeight;
 
+                     var adjustedLineHeight = lineHeight * 0.9;
+
                     var extraPadding = 65 + (numberOfRows * 3);
-        var newHeight = numberOfRows * lineHeight;
+                    var newHeight = numberOfRows * adjustedLineHeight;
                     var minHeight = 100; // 最小高さを設定
             
                     newHeight = Math.max(newHeight, minHeight); // 最小高さを保証する
