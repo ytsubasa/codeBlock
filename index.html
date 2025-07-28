@@ -224,30 +224,25 @@
             }
             
             
-        
-          function setEditorLanguage(language) {
-    console.log("Setting language mode in the editor to:", language);
+   function setEditorLanguage(language) {
+    console.log("🔄 Setting Ace Editor language mode to:", language);
     try {
         editor.session.setMode("ace/mode/" + language);
 
-        // 反映完了を少し待って確認
         setTimeout(() => {
             var currentMode = editor.session.getMode().$id;
             console.log("✅ Ace Editor 現在のモード:", currentMode);
-            // Swift側にモードを即時通知したい場合
-            window.webkit.messageHandlers.languageUpdate.postMessage(currentMode);
+            window.webkit.messageHandlers.languageUpdate?.postMessage(currentMode);
         }, 100);
 
-        // ドロップダウンを同期
-        var languageSelector = document.getElementById('languageSelector');
-        if (languageSelector) {
-            languageSelector.value = language;
-            console.log("Toggle button (languageSelector) updated to:", language);
-        }
+        // ドロップダウンも同期
+        var selector = document.getElementById('languageSelector');
+        if (selector) selector.value = language;
     } catch (e) {
-        console.error("Error setting language mode in the editor: ", e);
+        console.error("❌ Error setting language mode:", e);
     }
 }
+
 
             
             
