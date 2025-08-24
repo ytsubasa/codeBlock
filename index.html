@@ -1,24 +1,27 @@
-
-
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <!-- Ace エディタのメインスクリプト -->
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
-        <!-- 検索機能のための拡張機能スクリプト -->
-        <script
-            src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-searchbox.js"></script>
-        <!-- エディタのスタイル定義 -->
-        <style>
+
+<head>
+    <meta charset="UTF-8">
+    <!-- Ace エディタのメインスクリプト -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <!-- 検索機能のための拡張機能スクリプト -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-searchbox.js"></script>
+    <!-- エディタのスタイル定義 -->
+    <style>
         #editor {
-            min-height: 100px; 
-            width: 1700px; /* 幅を固定値1200pxに設定 */
-            margin-top: 40px; /* ドロップダウンメニューとコピーボタンの高さを考慮 */
-            overflow-y: hidden; /* 垂直方向のスクロールバーを隠す */
+            min-height: 100px;
+            width: 1700px;
+            /* 幅を固定値1200pxに設定 */
+            margin-top: 40px;
+            /* ドロップダウンメニューとコピーボタンの高さを考慮 */
+            overflow-y: hidden;
+            /* 垂直方向のスクロールバーを隠す */
         }
-        #languageSelector, #copyButton, #copySelectedButton {
+
+        #languageSelector,
+        #copyButton,
+        #copySelectedButton {
             position: absolute;
             top: 0px;
             padding: 5px 10px;
@@ -29,236 +32,259 @@
             outline: none;
             font-size: 16px;
             cursor: pointer;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
             transition: 0.3s;
         }
+
         #languageSelector {
             left: 20px;
         }
-        #copyButton, #copySelectedButton {
+
+        #copyButton,
+        #copySelectedButton {
             right: 20px;
         }
+
         #copyButton {
-            top: 0px; /* 位置を上に調整 */
+            top: 0px;
+            /* 位置を上に調整 */
         }
+
         #copyInfo {
-            position: absolute; /* 絶対位置指定 */
-            top: 0px; /* 位置を上に調整 */
-            right: 160px; /* copyButtonの左に配置するための位置調整 */
-            padding: 5px 10px; /* 内部の余白 */
-            border-radius: 5px; /* 角を丸く */
-            background-color: white; /* バックグラウンドカラーを白に */
-            color: black; /* テキストカラーを黒に */
-            border: 1px solid black; /* 黒い枠線を追加 */
-            font-size: 16px; /* フォントサイズ */
-            cursor: default; /* カーソルをデフォルトに */
-            box-shadow: none; /* 影を削除 */
+            position: absolute;
+            /* 絶対位置指定 */
+            top: 0px;
+            /* 位置を上に調整 */
+            right: 160px;
+            /* copyButtonの左に配置するための位置調整 */
+            padding: 5px 10px;
+            /* 内部の余白 */
+            border-radius: 5px;
+            /* 角を丸く */
+            background-color: white;
+            /* バックグラウンドカラーを白に */
+            color: black;
+            /* テキストカラーを黒に */
+            border: 1px solid black;
+            /* 黒い枠線を追加 */
+            font-size: 16px;
+            /* フォントサイズ */
+            cursor: default;
+            /* カーソルをデフォルトに */
+            box-shadow: none;
+            /* 影を削除 */
         }
-        
+
         #copyButton:hover {
-            background-color: #063852; /* ホバー時の背景色を変更 */
+            background-color: #063852;
+            /* ホバー時の背景色を変更 */
         }
 
         .ace_editor {
-            font-family: 'Menlo', 'Monaco', 'Courier New', monospace; /* フォントファミリーをより適切なものに変更 */
-            font-size: 22px; /* フォントサイズを14pxから18pxに変更 */
-            letter-spacing: normal; /* 文字間隔の調整 */
-            line-height: normal; /* 行間の調整 */
+            font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+            /* フォントファミリーをより適切なものに変更 */
+            font-size: 22px;
+            /* フォントサイズを14pxから18pxに変更 */
+            letter-spacing: normal;
+            /* 文字間隔の調整 */
+            line-height: normal;
+            /* 行間の調整 */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 言語選択のドロップダウンメニュー -->
+    <select id="languageSelector">
+        <option value="swift">Swift</option>
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="php">PHP</option>
+        <option value="kotlin">Kotlin</option>
+        <option value="sql">SQL</option>
+        <option value="dart">Dart</option>
+        <option value="csharp">C#</option>
+        <option value="c_cpp">C++</option>
+        <option value="golang">Go</option>
+        <option value="html">HTML</option>
+        <option value="bash">Bash</option>
+        <option value="css">CSS</option>
+        <option value="json">JSON</option>
+        <option value="python">Python</option>
+        <option value="sh">Shell</option>
+    </select>
+
+    <!-- エディタとして使用するコンテナ -->
+    <div id="editor"> </div>
+
+    <!-- 全体をコピーする機能を呼び出すボタン -->
+    <button id="copyButton" onclick="copyText()">コピー</button>
+
+    <div id="copyInfo">選択コピーは自動でされます</div>
+
+    <script>
+
+        window.onload = function () {
+            console.log("window.onload → エディタ初期化チェック");
+            // すでにコードが入っていない場合のみ、空コードを設定
+            if (!editor.getValue().trim()) {
+                console.log("エディタが空 → 左上に初期化");
+                setEditorCode("");
+            } else {
+                console.log("エディタに既存コードあり → 初期化スキップ");
+            }
+        };
+
+
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/swift");
+
+
+        editor.container.style.overflow = 'hidden'; // CSSで直接設定
+
+        // ページ全体でのスクロールを無効にする
+        document.body.addEventListener('wheel', function (e) {
+            e.preventDefault(); // マウスホイールによるスクロールを無効に
+        }, { passive: false });
+
+        document.body.addEventListener('touchmove', function (e) {
+            e.preventDefault(); // タッチによるスクロールを無効に
+        }, { passive: false });
+
+        editor.setOptions({
+            wrap: false,
+            fontSize: "22px"
+        });
+
+
+
+        editor.on('paste', function (e) {
+            // クリップボードからプレーンテキストとしてデータを取得
+            var clipboardData = e.text;
+
+            // エディタにプレーンテキストだけを挿入
+            e.text = clipboardData;
+
+            // ペースト直後にエディタの高さを調整する関数を呼び出す
+            setTimeout(function () {
+                adjustEditorHeightAndPostToSwift();
+            }, 100); // 少し遅延を入れることでDOMの更新を待つ
+        });
+
+
+
+
+        editor.setOptions({
+            enableBasicAutocompletion: true,  // 基本的なオートコンプリートを有効にする
+            enableSnippets: true,            // コードスニペットを有効にする
+            enableLiveAutocompletion: true,  // ライブ（リアルタイム）オートコンプリートを有効にする
+            dragEnabled: true,
+            wrap: true
+        });
+
+        editor.on('focus', function () {
+            editor.gotoLine(1, 0, false);
+        });
+
+
+
+        function adjustEditorHeightAndPostToSwift() {
+            // エディタの内容が完全にレンダリングされるのを確実に待つための遅延を設ける
+            setTimeout(function () {
+                var numberOfRows = editor.getSession().getLength();
+                var lineHeight = editor.renderer.lineHeight;
+
+                var extraPadding = 65 + (numberOfRows * 3);
+                var newHeight = numberOfRows * lineHeight;
+                var minHeight = 100; // 最小高さを設定
+
+                newHeight = Math.max(newHeight, minHeight); // 最小高さを保証する
+                document.getElementById('editor').style.height = newHeight + 'px';
+                editor.resize(); // エディタのサイズ変更をトリガー
+                newHeight += lineHeight * 2;
+
+                window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
+            }, 100); // 遅延時間は100ミリ秒に設定
         }
 
-    </style>
-    </head>
-    <body>
-        <!-- 言語選択のドロップダウンメニュー -->
-        <select id="languageSelector">
-           <option value="swift">Swift</option>
-           <option value="javascript">JavaScript</option>
-           <option value="typescript">TypeScript</option>
-           <option value="php">PHP</option>
-           <option value="kotlin">Kotlin</option>
-           <option value="sql">SQL</option>
-           <option value="dart">Dart</option>
-           <option value="csharp">C#</option>
-           <option value="c_cpp">C++</option>
-           <option value="golang">Go</option>
-           <option value="html">HTML</option>
-           <option value="bash">Bash</option>
-           <option value="css">CSS</option>
-           <option value="json">JSON</option>
-           <option value="python">Python</option>
-           <option value="sh">Shell</option>
-        </select>
 
-        <!-- エディタとして使用するコンテナ -->
-        <div id="editor"> </div>
-
-        <!-- 全体をコピーする機能を呼び出すボタン -->
-        <button id="copyButton" onclick="copyText()">コピー</button>
-
-        <div id="copyInfo">選択コピーは自動でされます</div>
-
-        <script>
-
-        window.onload = function() {
-    console.log("window.onload → エディタ初期化チェック");
-    // すでにコードが入っていない場合のみ、空コードを設定
-    if (!editor.getValue().trim()) {
-        console.log("エディタが空 → 左上に初期化");
-        setEditorCode("");
-    } else {
-        console.log("エディタに既存コードあり → 初期化スキップ");
-    }
-};
-       
-         
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/monokai");
-            editor.session.setMode("ace/mode/swift");
+        editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
+        adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
 
 
-            editor.container.style.overflow = 'hidden'; // CSSで直接設定
-
-            // ページ全体でのスクロールを無効にする
-            document.body.addEventListener('wheel', function(e) {
-                e.preventDefault(); // マウスホイールによるスクロールを無効に
-            }, { passive: false });
-        
-            document.body.addEventListener('touchmove', function(e) {
-                e.preventDefault(); // タッチによるスクロールを無効に
-            }, { passive: false });
-        
-            editor.setOptions({
-                 wrap: false, 
-                fontSize: "22px"
-            });
-        
-
-
-            editor.on('paste', function(e) {
-                // クリップボードからプレーンテキストとしてデータを取得
-                var clipboardData = e.text;
-            
-                // エディタにプレーンテキストだけを挿入
-                e.text = clipboardData;
-            
-                // ペースト直後にエディタの高さを調整する関数を呼び出す
-                setTimeout(function() {
-                    adjustEditorHeightAndPostToSwift();
-                }, 100); // 少し遅延を入れることでDOMの更新を待つ
-            });
-            
-        
-            
-        
-            editor.setOptions({
-                enableBasicAutocompletion: true,  // 基本的なオートコンプリートを有効にする
-                enableSnippets: true,            // コードスニペットを有効にする
-                enableLiveAutocompletion: true,  // ライブ（リアルタイム）オートコンプリートを有効にする
-                dragEnabled: true,     
-                wrap: true   
-            });
-
-            editor.on('focus', function() {
-                editor.gotoLine(1, 0, false);
-            });
+        function onEditorContentChange() {
+            console.log("codeUpdate event triggered"); // デバッグプリント
+            window.webkit.messageHandlers.codeUpdate.postMessage(editor.getValue());
+        }
 
 
 
-            function adjustEditorHeightAndPostToSwift() {
-                // エディタの内容が完全にレンダリングされるのを確実に待つための遅延を設ける
-                setTimeout(function() {
-                    var numberOfRows = editor.getSession().getLength();
-                    var lineHeight = editor.renderer.lineHeight;
+        function onLanguageSelectionChange() {
+            console.log("languageUpdate event triggered", languageSelector.value); // デバッグプリント
+            window.webkit.messageHandlers.languageUpdate.postMessage(languageSelector.value);
+        }
 
-                    var extraPadding = 65 + (numberOfRows * 3);
-        var newHeight = numberOfRows * lineHeight;
-                    var minHeight = 100; // 最小高さを設定
-            
-                    newHeight = Math.max(newHeight, minHeight); // 最小高さを保証する
-                    document.getElementById('editor').style.height = newHeight + 'px';
-                    editor.resize(); // エディタのサイズ変更をトリガー
-            
-                    window.webkit.messageHandlers.heightHandler.postMessage(newHeight); // 新しい高さをSwiftに送信
-                }, 100); // 遅延時間は100ミリ秒に設定
+
+
+
+        editor.getSession().on('change', onEditorContentChange);
+
+        languageSelector.onchange = onLanguageSelectionChange;
+
+
+        function setEditorCode(code) {
+            console.log("Setting code in the editor with raw input:", code);
+            try {
+                // デコードされたコードをエディタに設定
+                var decodedCode = decodeURIComponent(code);
+                console.log("Decoded code:", decodedCode);
+                editor.setValue(decodedCode, 1); // カーソルを文書の先頭に設定
+                editor.gotoLine(1, 0, true); // カーソルを最初の行の最初の位置に移動
+                console.log("Code is set in the editor successfully.");
+            } catch (e) {
+                // エラーが発生した場合、コンソールにエラーメッセージを表示
+                console.error("Error setting code in the editor: ", e);
+                console.error("Exception details:", e.message, "\nStack trace:", e.stack);
             }
-            
-        
-            editor.getSession().on('change', adjustEditorHeightAndPostToSwift);
-            adjustEditorHeightAndPostToSwift(); // 初期読み込み時にも高さを調整
-        
+        }
 
-            function onEditorContentChange() {
-                console.log("codeUpdate event triggered"); // デバッグプリント
-                window.webkit.messageHandlers.codeUpdate.postMessage(editor.getValue());
+
+        function setEditorLanguage(language) {
+            console.log("🔄 Setting Ace Editor language mode to:", language);
+            try {
+                editor.session.setMode("ace/mode/" + language);
+
+                setTimeout(() => {
+                    var currentMode = editor.session.getMode().$id;
+                    console.log("✅ Ace Editor 現在のモード:", currentMode);
+                    window.webkit.messageHandlers.languageUpdate?.postMessage(currentMode);
+                }, 100);
+
+                // ドロップダウンも同期
+                var selector = document.getElementById('languageSelector');
+                if (selector) selector.value = language;
+            } catch (e) {
+                console.error("❌ Error setting language mode:", e);
             }
-            
-
-
-            function onLanguageSelectionChange() {
-                console.log("languageUpdate event triggered", languageSelector.value); // デバッグプリント
-                window.webkit.messageHandlers.languageUpdate.postMessage(languageSelector.value);
-            }
-            
-            
-
-
-            editor.getSession().on('change', onEditorContentChange);
-
-            languageSelector.onchange = onLanguageSelectionChange;
-
-                        
-            function setEditorCode(code) {
-                console.log("Setting code in the editor with raw input:", code);
-                try {
-                    // デコードされたコードをエディタに設定
-                    var decodedCode = decodeURIComponent(code);
-                    console.log("Decoded code:", decodedCode);
-                    editor.setValue(decodedCode, 1); // カーソルを文書の先頭に設定
-                    editor.gotoLine(1, 0, true); // カーソルを最初の行の最初の位置に移動
-                    console.log("Code is set in the editor successfully.");
-                } catch (e) {
-                    // エラーが発生した場合、コンソールにエラーメッセージを表示
-                    console.error("Error setting code in the editor: ", e);
-                    console.error("Exception details:", e.message, "\nStack trace:", e.stack);
-                }
-            }
-            
-            
-   function setEditorLanguage(language) {
-    console.log("🔄 Setting Ace Editor language mode to:", language);
-    try {
-        editor.session.setMode("ace/mode/" + language);
-
-        setTimeout(() => {
-            var currentMode = editor.session.getMode().$id;
-            console.log("✅ Ace Editor 現在のモード:", currentMode);
-            window.webkit.messageHandlers.languageUpdate?.postMessage(currentMode);
-        }, 100);
-
-        // ドロップダウンも同期
-        var selector = document.getElementById('languageSelector');
-        if (selector) selector.value = language;
-    } catch (e) {
-        console.error("❌ Error setting language mode:", e);
-    }
-}
-
-
-            
-            
+        }
 
 
 
 
 
-                
+
+
+
+
+
 
         function copyText() {
             if (editor) { // editor オブジェクトの存在を確認
                 var text = editor.getSelectedText() || editor.getValue();
-                navigator.clipboard.writeText(text).then(function() {
+                navigator.clipboard.writeText(text).then(function () {
                     window.webkit.messageHandlers.copyHandler.postMessage(text);
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.error('コピーに失敗しました: ', error);
                 });
             } else {
@@ -266,7 +292,7 @@
             }
         }
 
-        editor.getSession().selection.on('changeSelection', function(e) {
+        editor.getSession().selection.on('changeSelection', function (e) {
             var selectedText = editor.getSelectedText();
             if (selectedText.length > 0) {
                 // 選択されたテキストがある場合、カスタムURLを呼び出す
@@ -281,7 +307,7 @@
             window.location.href = "myapp://copy?text=" + encodedText;
         }
 
-        
+
         function selectText(elementId) {
             var text = document.getElementById(elementId);
             var range = document.createRange();
@@ -291,7 +317,7 @@
         }
 
 
-   
+
         function pasteText() {
             navigator.clipboard.readText().then((text) => {
                 // ペーストする場所（テキストエリアなど）を指定して、textを挿入
@@ -300,18 +326,19 @@
                 console.error('ペーストに失敗しました: ', err);
             });
         }
-        
+
 
         // ドロップダウンメニューの選択変更イベントを処理する
-        document.getElementById('languageSelector').addEventListener('change', function() {
+        document.getElementById('languageSelector').addEventListener('change', function () {
             editor.session.setMode("ace/mode/" + this.value);  // エディタのモードを変更
         });
 
         // 検索機能を有効化
         ace.require("ace/ext/searchbox");
 
-   
+
         // その他の関数とイベントリスナー...
     </script>
-    </body>
+</body>
+
 </html>
